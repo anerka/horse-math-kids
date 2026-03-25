@@ -1,5 +1,11 @@
 let ctx: AudioContext | null = null
 
+const baseUrl = import.meta.env.BASE_URL || '/'
+const wrongFartUrl = `${baseUrl}sounds/wrong-fart.wav`
+const wrongScreamUrl = `${baseUrl}sounds/wrong-scream.wav`
+const roundApplauseUrl = `${baseUrl}sounds/round-applause-510.wav`
+const roundCheerUrl = `${baseUrl}sounds/round-cheer-515.wav`
+
 function ensureCtx(): AudioContext | null {
   if (typeof window === 'undefined') return null
   try {
@@ -104,7 +110,7 @@ function playFart(): void {
       return
     }
     if (!wrongFartAudio) {
-      wrongFartAudio = new Audio('/sounds/wrong-fart.wav')
+      wrongFartAudio = new Audio(wrongFartUrl)
       wrongFartAudio.preload = 'auto'
       wrongFartAudio.volume = 1
     }
@@ -124,7 +130,7 @@ function playScream(): void {
   try {
     if (typeof Audio === 'undefined') return
     if (!wrongScreamAudio) {
-      wrongScreamAudio = new Audio('/sounds/wrong-scream.wav')
+      wrongScreamAudio = new Audio(wrongScreamUrl)
       wrongScreamAudio.preload = 'auto'
       wrongScreamAudio.volume = 1
     }
@@ -193,10 +199,10 @@ function playRoundCompleteFallback(): void {
  */
 export function playComplete(allCorrect: boolean): void {
   if (allCorrect) {
-    if (!roundApplauseAudio) roundApplauseAudio = new Audio('/sounds/round-applause-510.wav')
-    playRoundAudio(roundApplauseAudio, '/sounds/round-applause-510.wav')
+    if (!roundApplauseAudio) roundApplauseAudio = new Audio(roundApplauseUrl)
+    playRoundAudio(roundApplauseAudio, roundApplauseUrl)
   } else {
-    if (!roundCheerAudio) roundCheerAudio = new Audio('/sounds/round-cheer-515.wav')
-    playRoundAudio(roundCheerAudio, '/sounds/round-cheer-515.wav')
+    if (!roundCheerAudio) roundCheerAudio = new Audio(roundCheerUrl)
+    playRoundAudio(roundCheerAudio, roundCheerUrl)
   }
 }
