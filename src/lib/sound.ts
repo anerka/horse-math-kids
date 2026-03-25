@@ -38,7 +38,28 @@ function beep(
 }
 
 /** Kort syntetisk "fart": brus i basregistret + liten ton-svaj. */
+let wrongFartAudio: HTMLAudioElement | null = null
+
 function playFart(): void {
+  // Preferera den riktiga ljudfilen (kort och tydlig).
+  try {
+    if (typeof Audio !== 'undefined') {
+      if (!wrongFartAudio) {
+        wrongFartAudio = new Audio('/sounds/wrong-fart.wav')
+        wrongFartAudio.preload = 'auto'
+        wrongFartAudio.volume = 0.85
+      }
+      wrongFartAudio.currentTime = 0
+      void wrongFartAudio.play().catch(() => {
+        // Om autoplay/blockering händer: kör fallback-syntes.
+      })
+      return
+    }
+  } catch {
+    // Kör fallback.
+  }
+
+  // Fallback: syntetisk fart om filen inte kan spelas.
   const c = ensureCtx()
   if (!c) return
 
