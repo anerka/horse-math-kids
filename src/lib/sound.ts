@@ -5,6 +5,8 @@ const wrongFartUrl = `${baseUrl}sounds/wrong-fart.wav`
 const wrongScreamUrl = `${baseUrl}sounds/wrong-scream.wav`
 const roundApplauseUrl = `${baseUrl}sounds/round-applause-510.wav`
 const roundCheerUrl = `${baseUrl}sounds/round-cheer-515.wav`
+const correctSparkleUrl = `${baseUrl}sounds/correct-sparkle-866.wav`
+const correctVictoryUrl = `${baseUrl}sounds/correct-victory-2012.wav`
 
 function ensureCtx(): AudioContext | null {
   if (typeof window === 'undefined') return null
@@ -125,10 +127,34 @@ function playScream(): void {
   }
 }
 
-/** Kort glad tvåton — tydlig bekräftelse utan “hästljud”. */
+let correctSparkleAudio: HTMLAudioElement | null = null
+let correctVictoryAudio: HTMLAudioElement | null = null
+
+/** Slumpa mellan två Mixkit-ljud vid rätt svar. */
 export function playCorrect(): void {
-  // Inget "bip": just nu har vi bara WAV-ljud för fel & runda klart.
-  // (Om du vill ha WAV även för rätt svar kan vi lägga till det också.)
+  try {
+    if (typeof Audio === 'undefined') return
+    const useSparkle = Math.random() < 0.5
+    if (useSparkle) {
+      if (!correctSparkleAudio) {
+        correctSparkleAudio = new Audio(correctSparkleUrl)
+        correctSparkleAudio.preload = 'auto'
+        correctSparkleAudio.volume = 0.9
+      }
+      correctSparkleAudio.currentTime = 0
+      void correctSparkleAudio.play().catch(() => {})
+    } else {
+      if (!correctVictoryAudio) {
+        correctVictoryAudio = new Audio(correctVictoryUrl)
+        correctVictoryAudio.preload = 'auto'
+        correctVictoryAudio.volume = 0.9
+      }
+      correctVictoryAudio.currentTime = 0
+      void correctVictoryAudio.play().catch(() => {})
+    }
+  } catch {
+    // tyst
+  }
 }
 
 export function playWrong(): void {
