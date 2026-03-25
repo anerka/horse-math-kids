@@ -7,7 +7,6 @@ const STAR_SLOTS = [
   { className: 's4', delay: '-1.1s' },
   { className: 's5', delay: '-0.55s' },
   { className: 's6', delay: '-1.4s' },
-  { className: 's7', delay: '-0.2s' },
 ] as const
 
 /** HappyHorse-bild + flytande stjärnor (samma stämning som gamla firande-SVG:n). */
