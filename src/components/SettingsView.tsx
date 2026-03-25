@@ -1,6 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { AppSettings } from '../lib/settings'
 import { presetValues } from '../lib/settings'
+import {
+  nudgeHomeMenuMusic,
+  startHomeMenuMusic,
+  stopHomeMenuMusic,
+} from '../lib/sound'
 
 type Props = {
   initial: AppSettings
@@ -10,6 +15,27 @@ type Props = {
 
 export function SettingsView({ initial, onSave, onClose }: Props) {
   const [s, setS] = useState<AppSettings>(() => ({ ...initial }))
+
+  const menuMusicOn = s.soundEnabled && s.menuMusicEnabled
+
+  useEffect(() => {
+    if (!menuMusicOn) {
+      stopHomeMenuMusic()
+      return
+    }
+    startHomeMenuMusic()
+    const onInteract = () => nudgeHomeMenuMusic()
+    window.addEventListener('pointerdown', onInteract, { capture: true })
+    window.addEventListener('touchstart', onInteract, {
+      capture: true,
+      passive: true,
+    })
+    return () => {
+      window.removeEventListener('pointerdown', onInteract, true)
+      window.removeEventListener('touchstart', onInteract, true)
+      stopHomeMenuMusic()
+    }
+  }, [menuMusicOn])
 
   const setPreset = (p: 'easy' | 'medium' | 'hard') => {
     const v = presetValues(p)
