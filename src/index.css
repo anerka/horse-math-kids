@@ -48,6 +48,89 @@ body {
   padding-bottom: 2.5rem;
 }
 
+.welcome-screen {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0.5rem 2rem;
+}
+
+.welcome-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 22rem;
+}
+
+.welcome-title {
+  margin: 0;
+  font-size: clamp(1.45rem, 4.2vw, 1.85rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--brown);
+  letter-spacing: 0.02em;
+  max-width: 18rem;
+  animation: welcomeTitleIn 0.9s ease-out both;
+}
+
+@keyframes welcomeTitleIn {
+  from {
+    opacity: 0;
+    transform: translateY(-0.35rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.welcome-horse-wrap {
+  width: min(72vw, 14rem);
+  aspect-ratio: 200 / 160;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-horse {
+  width: 100%;
+  height: auto;
+  display: block;
+  animation: welcomeHorseReveal 1.6s ease-out both;
+  filter: drop-shadow(0 4px 12px var(--shadow));
+}
+
+@keyframes welcomeHorseReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.welcome-start-btn {
+  min-width: 11rem;
+  padding: 0.95rem 1.5rem;
+  font-size: 1.15rem;
+  animation: welcomeBtnIn 0.45s ease-out both;
+}
+
+@keyframes welcomeBtnIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .top-bar {
   display: flex;
   justify-content: space-between;

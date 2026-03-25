@@ -8,11 +8,13 @@ import {
   stopHomeMenuMusic,
   warmupSounds,
 } from './lib/sound'
+import { WelcomeView } from './components/WelcomeView'
 import { HomeView } from './components/HomeView'
 import { PracticeView } from './components/PracticeView'
 import { SettingsView } from './components/SettingsView'
 
 type Screen =
+  | { name: 'welcome' }
   | { name: 'home' }
   | { name: 'practice'; mode: Operation | 'mixed' }
   | { name: 'settings' }
@@ -20,7 +22,7 @@ type Screen =
 function App() {
   const [settings, setSettings] = useState<AppSettings>(() => loadSettings())
   const [statsCarrots, setStatsCarrots] = useState(() => loadStats().carrots)
-  const [screen, setScreen] = useState<Screen>({ name: 'home' })
+  const [screen, setScreen] = useState<Screen>({ name: 'welcome' })
 
   const menuMusicOn =
     settings.soundEnabled &&
@@ -70,6 +72,17 @@ function App() {
       window.removeEventListener('touchstart', onInteract, true)
     }
   }, [menuMusicOn])
+
+  const enterMainMenuFromWelcome = useCallback(() => {
+    warmupSounds()
+    startHomeMenuMusic()
+    nudgeHomeMenuMusic()
+    setScreen({ name: 'home' })
+  }, [])
+
+  if (screen.name === 'welcome') {
+    return <WelcomeView onStart={enterMainMenuFromWelcome} />
+  }
 
   if (screen.name === 'settings') {
     return (
