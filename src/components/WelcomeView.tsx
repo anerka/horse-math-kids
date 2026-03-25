@@ -23,8 +23,8 @@ export function WelcomeView({ onStart }: Props) {
             className="welcome-horse"
             src={`${baseUrl}welcome-horse.svg`}
             alt=""
-            width={220}
-            height={176}
+            width={200}
+            height={248}
             decoding="async"
           />
         </div>

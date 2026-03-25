@@ -88,7 +88,7 @@ body {
 
 .welcome-horse-wrap {
   width: min(72vw, 14rem);
-  aspect-ratio: 200 / 160;
+  aspect-ratio: 200 / 248;
   display: flex;
   align-items: center;
   justify-content: center;
