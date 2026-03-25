@@ -3,6 +3,7 @@ let ctx: AudioContext | null = null
 const baseUrl = import.meta.env.BASE_URL || '/'
 const wrongFartUrl = `${baseUrl}sounds/wrong-fart.wav`
 const wrongScreamUrl = `${baseUrl}sounds/wrong-scream.wav`
+const wrongFallScreamUrl = `${baseUrl}sounds/wrong-fall-scream-392.wav`
 const roundApplauseUrl = `${baseUrl}sounds/round-applause-510.wav`
 const roundCheerUrl = `${baseUrl}sounds/round-cheer-515.wav`
 const correctSparkleUrl = `${baseUrl}sounds/correct-sparkle-866.wav`
@@ -27,7 +28,9 @@ function ensureCtx(): AudioContext | null {
 /** Kort syntetisk "fart" för fallback. */
 let wrongFartAudio: HTMLAudioElement | null = null
 let wrongScreamAudio: HTMLAudioElement | null = null
-let wrongAlt = false
+let wrongFallAudio: HTMLAudioElement | null = null
+/** Roterar mellan tre fel-ljud. */
+let wrongSoundIndex = 0
 
 function playFartSynth(): void {
   const c = ensureCtx()
@@ -94,6 +97,7 @@ function playFart(): void {
       wrongFartAudio = new Audio(wrongFartUrl)
       wrongFartAudio.preload = 'auto'
       wrongFartAudio.volume = 1
+      wrongFartAudio.setAttribute('playsinline', 'true')
     }
     wrongFartAudio.currentTime = 0
     const p = wrongFartAudio.play()
@@ -114,6 +118,7 @@ function playScream(): void {
       wrongScreamAudio = new Audio(wrongScreamUrl)
       wrongScreamAudio.preload = 'auto'
       wrongScreamAudio.volume = 1
+      wrongScreamAudio.setAttribute('playsinline', 'true')
     }
     wrongScreamAudio.currentTime = 0
     const p = wrongScreamAudio.play()
@@ -127,30 +132,63 @@ function playScream(): void {
   }
 }
 
-let correctSparkleAudio: HTMLAudioElement | null = null
-let correctVictoryAudio: HTMLAudioElement | null = null
+function playFallScream(): void {
+  try {
+    if (typeof Audio === 'undefined') return
+    if (!wrongFallAudio) {
+      wrongFallAudio = new Audio(wrongFallScreamUrl)
+      wrongFallAudio.preload = 'auto'
+      wrongFallAudio.volume = 1
+      wrongFallAudio.setAttribute('playsinline', 'true')
+    }
+    wrongFallAudio.currentTime = 0
+    const p = wrongFallAudio.play()
+    if (p && typeof p.catch === 'function') {
+      void p.catch(() => {
+        playFartSynth()
+      })
+    }
+  } catch {
+    playFartSynth()
+  }
+}
+
+/** Ett Audio-element som byter källa — mer tillförlitligt på mobil än två separata instanser. */
+let correctAudio: HTMLAudioElement | null = null
 
 /** Slumpa mellan två Mixkit-ljud vid rätt svar. */
 export function playCorrect(): void {
   try {
     if (typeof Audio === 'undefined') return
-    const useSparkle = Math.random() < 0.5
-    if (useSparkle) {
-      if (!correctSparkleAudio) {
-        correctSparkleAudio = new Audio(correctSparkleUrl)
-        correctSparkleAudio.preload = 'auto'
-        correctSparkleAudio.volume = 0.9
+    void ensureCtx()?.resume()
+    const url =
+      Math.random() < 0.5 ? correctSparkleUrl : correctVictoryUrl
+    if (!correctAudio) {
+      correctAudio = new Audio()
+      correctAudio.preload = 'auto'
+      correctAudio.setAttribute('playsinline', 'true')
+    }
+    correctAudio.volume = 0.95
+    correctAudio.src = url
+
+    const tryPlay = () => {
+      if (!correctAudio) return
+      correctAudio.currentTime = 0
+      const p = correctAudio.play()
+      if (p && typeof p.catch === 'function') {
+        void p.catch(() => {
+          requestAnimationFrame(() => {
+            void correctAudio?.play().catch(() => {})
+          })
+        })
       }
-      correctSparkleAudio.currentTime = 0
-      void correctSparkleAudio.play().catch(() => {})
+    }
+
+    correctAudio.load()
+    if (correctAudio.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+      tryPlay()
     } else {
-      if (!correctVictoryAudio) {
-        correctVictoryAudio = new Audio(correctVictoryUrl)
-        correctVictoryAudio.preload = 'auto'
-        correctVictoryAudio.volume = 0.9
-      }
-      correctVictoryAudio.currentTime = 0
-      void correctVictoryAudio.play().catch(() => {})
+      correctAudio.addEventListener('canplay', tryPlay, { once: true })
     }
   } catch {
     // tyst
@@ -158,12 +196,11 @@ export function playCorrect(): void {
 }
 
 export function playWrong(): void {
-  // Växla mellan de två “wrong”-ljuden per fel-svar.
-  if (wrongAlt) playScream()
-  else playFart()
-  wrongAlt = !wrongAlt
-
-  // Inget "bip" efter ljudfilen.
+  const i = wrongSoundIndex % 3
+  wrongSoundIndex += 1
+  if (i === 0) playFart()
+  else if (i === 1) playScream()
+  else playFallScream()
 }
 
 let roundApplauseAudio: HTMLAudioElement | null = null
@@ -200,10 +237,16 @@ function playRoundCompleteFallback(): void {
  */
 export function playComplete(allCorrect: boolean): void {
   if (allCorrect) {
-    if (!roundApplauseAudio) roundApplauseAudio = new Audio(roundApplauseUrl)
+    if (!roundApplauseAudio) {
+      roundApplauseAudio = new Audio(roundApplauseUrl)
+      roundApplauseAudio.setAttribute('playsinline', 'true')
+    }
     playRoundAudio(roundApplauseAudio, roundApplauseUrl)
   } else {
-    if (!roundCheerAudio) roundCheerAudio = new Audio(roundCheerUrl)
+    if (!roundCheerAudio) {
+      roundCheerAudio = new Audio(roundCheerUrl)
+      roundCheerAudio.setAttribute('playsinline', 'true')
+    }
     playRoundAudio(roundCheerAudio, roundCheerUrl)
   }
 }
