@@ -16,6 +16,7 @@ export default defineConfig({
         'jamie-horse.png',
         'error-horse.png',
         'thumbsup-horse.png',
+        'happy-horse.png',
       ],
       manifest: {
         name: 'Hästmatte',

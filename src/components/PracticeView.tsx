@@ -6,7 +6,7 @@ import {
   opSymbol,
   type Problem,
 } from '../lib/problems'
-import { CelebrationHorse } from './CelebrationHorse'
+import { CorrectAnswerCelebrate } from './CorrectAnswerCelebrate'
 import {
   nudgePracticeGameMusic,
   pausePracticeGameMusic,
@@ -234,7 +234,7 @@ export function PracticeView({ settings, mode, onExit }: Props) {
           {lastOk ? (
             <div className="correct-celebrate">
               <div className="correct-celebrate-art" aria-hidden>
-                <CelebrationHorse />
+                <CorrectAnswerCelebrate />
               </div>
               <p className="fb ok correct-celebrate-msg">Rätt, bra räknat!</p>
             </div>
