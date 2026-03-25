@@ -83,14 +83,22 @@ async function decodeSound(url: string): Promise<AudioBuffer | null> {
 function playDecodedBuffer(buffer: AudioBuffer, gain: number): void {
   const c = ensureCtx()
   if (!c) return
-  void c.resume()
-  const src = c.createBufferSource()
-  const g = c.createGain()
-  g.gain.value = gain
-  src.buffer = buffer
-  src.connect(g)
-  g.connect(c.destination)
-  src.start(0)
+
+  const run = (): void => {
+    const src = c.createBufferSource()
+    const g = c.createGain()
+    g.gain.value = gain
+    src.buffer = buffer
+    src.connect(g)
+    g.connect(c.destination)
+    src.start(0)
+  }
+
+  if (c.state === 'suspended') {
+    void c.resume().then(run)
+  } else {
+    run()
+  }
 }
 
 function playHtmlFallback(url: string, volume: number): void {
@@ -134,6 +142,7 @@ function playFartSynth(): void {
   const c = ensureCtx()
   if (!c) return
 
+  const buildAndStart = (): void => {
   const t0 = c.currentTime
   const dur = 0.28
 
@@ -181,6 +190,13 @@ function playFartSynth(): void {
   og.connect(c.destination)
   osc.start(t0)
   osc.stop(t0 + dur)
+  }
+
+  if (c.state === 'suspended') {
+    void c.resume().then(buildAndStart)
+  } else {
+    buildAndStart()
+  }
 }
 
 export function playCorrect(): void {
@@ -214,6 +230,7 @@ let homeMenuAudio: HTMLAudioElement | null = null
 /** Loopande bakgrund på startskärmen (MP3 via HTMLAudio). */
 export function startHomeMenuMusic(): void {
   if (typeof Audio === 'undefined') return
+  stopPracticeGameMusic()
   if (homeMenuAudio) {
     void homeMenuAudio.play().catch(() => {})
     return
@@ -248,6 +265,7 @@ let practiceGameAudio: HTMLAudioElement | null = null
 
 export function startPracticeGameMusic(): void {
   if (typeof Audio === 'undefined') return
+  stopHomeMenuMusic()
   if (practiceGameAudio) {
     void practiceGameAudio.play().catch(() => {})
     return

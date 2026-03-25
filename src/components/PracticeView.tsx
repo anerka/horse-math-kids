@@ -15,6 +15,7 @@ import {
   playWrong,
   resumePracticeGameMusic,
   startPracticeGameMusic,
+  stopHomeMenuMusic,
   stopPracticeGameMusic,
   warmupSounds,
 } from '../lib/sound'
@@ -43,6 +44,7 @@ export function PracticeView({ settings, mode, onExit }: Props) {
   )
 
   useEffect(() => {
+    stopHomeMenuMusic()
     warmupSounds()
   }, [])
 
