@@ -59,7 +59,7 @@ export function PracticeView({ settings, mode, onExit }: Props) {
     if (index + 1 >= problems.length) {
       const stars = starsForScore(score)
       setRoundStars(stars)
-      if (settings.soundEnabled) playComplete()
+      if (settings.soundEnabled) playComplete(score === ROUND_LEN)
       const st = addRoundReward(stars)
       setRewardTotal(st.carrots)
       setPhase('done')

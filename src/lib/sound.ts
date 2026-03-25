@@ -156,9 +156,47 @@ export function playWrong(): void {
   beep(220, 160, 'triangle', 0.04)
 }
 
-/** Liten uppåtgående sekvens när omgången är klar. */
-export function playComplete(): void {
+let roundApplauseAudio: HTMLAudioElement | null = null
+let roundCheerAudio: HTMLAudioElement | null = null
+
+function playRoundAudio(audio: HTMLAudioElement | null, url: string): void {
+  try {
+    if (typeof Audio === 'undefined') return
+    const a = audio ?? new Audio(url)
+    a.preload = 'auto'
+    a.volume = 0.85
+    a.currentTime = 0
+    const p = a.play()
+    if (p && typeof p.catch === 'function') {
+      void p.catch(() => {
+        // Fallback om spelning blockeras.
+        playRoundCompleteFallback()
+      })
+    }
+    return
+  } catch {
+    playRoundCompleteFallback()
+  }
+}
+
+function playRoundCompleteFallback(): void {
+  // Liten uppåtgående sekvens när omgången är klar.
   beep(523, 100, 'sine', 0.05)
   setTimeout(() => beep(659, 100, 'sine', 0.045), 120)
   setTimeout(() => beep(784, 160, 'sine', 0.038), 240)
+}
+
+/**
+ * Spelas när omgången är slut.
+ * - `allCorrect === true` => 10/10: publik-апplause.
+ * - Annars => crowd cheer/scream/applause.
+ */
+export function playComplete(allCorrect: boolean): void {
+  if (allCorrect) {
+    if (!roundApplauseAudio) roundApplauseAudio = new Audio('/sounds/round-applause-510.wav')
+    playRoundAudio(roundApplauseAudio, '/sounds/round-applause-510.wav')
+  } else {
+    if (!roundCheerAudio) roundCheerAudio = new Audio('/sounds/round-cheer-515.wav')
+    playRoundAudio(roundCheerAudio, '/sounds/round-cheer-515.wav')
+  }
 }
