@@ -1,19 +1,23 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState, type ReactNode } from 'react'
 
 const HOLD_MS = 2000
 
 type Props = {
-  label: string
-  hint: string
   onComplete: () => void
+  /** Endast skärmläsare — inget synligt barnetikett. */
+  ariaLabel: string
+  children: ReactNode
   className?: string
+  /** Visuell fyllnadsindikator (kan stängas av för extra diskret läge). */
+  showProgress?: boolean
 }
 
 export function LongPressButton({
-  label,
-  hint,
   onComplete,
+  ariaLabel,
+  children,
   className,
+  showProgress = true,
 }: Props) {
   const [progress, setProgress] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -47,6 +51,7 @@ export function LongPressButton({
     <button
       type="button"
       className={['long-press-btn', className].filter(Boolean).join(' ')}
+      aria-label={ariaLabel}
       onPointerDown={(e) => {
         e.currentTarget.setPointerCapture(e.pointerId)
         start()
@@ -57,13 +62,14 @@ export function LongPressButton({
         if (e.pressure === 0) clear()
       }}
     >
-      <span
-        className="long-press-fill"
-        style={{ transform: `scaleX(${progress})` }}
-        aria-hidden
-      />
-      <span className="long-press-label">{label}</span>
-      <span className="long-press-hint">{hint}</span>
+      {showProgress ? (
+        <span
+          className="long-press-fill"
+          style={{ transform: `scaleX(${progress})` }}
+          aria-hidden
+        />
+      ) : null}
+      <span className="long-press-inner">{children}</span>
     </button>
   )
 }

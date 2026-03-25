@@ -3,6 +3,27 @@ import { enabledOperationList } from '../lib/settings'
 import { opLabel } from '../lib/problems'
 import { LongPressButton } from './LongPressButton'
 
+/** Ser ut som en liten grästuva — inte uppenbart klickbar. */
+function GrassTuftGlyph() {
+  return (
+    <svg
+      className="parent-hotspot-glyph"
+      viewBox="0 0 40 40"
+      width="26"
+      height="26"
+      aria-hidden
+    >
+      <path
+        d="M8 28c2-12 4-18 6-20s3 2 2 8c2-10 5-16 7-16s3 6 2 16c3-9 6-14 8-12s1 8-3 20"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </svg>
+  )
+}
+
 type Props = {
   settings: AppSettings
   statsCarrots: number
@@ -75,21 +96,23 @@ export function HomeView({
 
       {!canMixed && enabled.length > 0 && (
         <p className="hint-text">
-          Slå på minst två räknesätt i inställningar för att använda blandat.
+          Be en vuxen om du vill öva flera sätt i samma omgång.
         </p>
       )}
       {enabled.length === 0 && (
         <p className="hint-text warn">
-          Alla räknesätt är avstängda. Be en vuxen öppna inställningar.
+          Be en vuxen — det finns inget att öva just nu.
         </p>
       )}
 
       <LongPressButton
-        className="settings-entry"
-        label="Inställningar"
-        hint="Håll intryck i 2 sekunder (för vuxna)"
+        className="parent-settings-hotspot"
+        ariaLabel="Föräldrainställningar. Håll intryck i två sekunder."
         onComplete={onOpenSettings}
-      />
+        showProgress
+      >
+        <GrassTuftGlyph />
+      </LongPressButton>
     </div>
   )
 }

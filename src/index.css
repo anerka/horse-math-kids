@@ -37,10 +37,15 @@ body {
 }
 
 .screen {
+  position: relative;
   min-height: calc(100dvh - 2rem);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+.screen.home {
+  padding-bottom: 2.5rem;
 }
 
 .top-bar {
@@ -161,44 +166,63 @@ body {
 
 .long-press-btn {
   position: relative;
-  margin-top: auto;
   overflow: hidden;
-  border: 2px dashed var(--brown-light);
-  border-radius: 1rem;
-  padding: 0.85rem 1rem;
-  background: #fff;
   cursor: pointer;
-  text-align: center;
-  min-height: 4.25rem;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: inherit;
 }
 
 .long-press-fill {
   position: absolute;
   inset: 0;
-  background: rgba(196, 92, 62, 0.2);
+  border-radius: inherit;
+  background: rgba(196, 92, 62, 0.18);
   transform-origin: left center;
   transform: scaleX(0);
   transition: none;
   pointer-events: none;
 }
 
-.long-press-label {
+.long-press-inner {
   position: relative;
-  display: block;
-  font-weight: 700;
-  color: var(--brown);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.long-press-hint {
-  position: relative;
-  display: block;
-  font-size: 0.8rem;
-  color: var(--brown-light);
-  margin-top: 0.2rem;
+/* Diskret föräldraåtkomst: ser ut som en del av bakgrunden, inte en knapp. */
+.parent-settings-hotspot {
+  position: absolute;
+  right: 0.15rem;
+  bottom: 0.15rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  border-radius: 50%;
+  overflow: hidden;
+  color: rgba(92, 64, 51, 0.22);
+  box-shadow: none;
+  opacity: 1;
 }
 
-.settings-entry {
-  margin-top: 1rem;
+.parent-settings-hotspot:focus-visible {
+  outline: 2px solid var(--brown-light);
+  outline-offset: 2px;
+  color: rgba(92, 64, 51, 0.45);
+}
+
+.parent-settings-hotspot:active {
+  color: rgba(92, 64, 51, 0.35);
+}
+
+.parent-hotspot-glyph {
+  display: block;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 1px rgba(245, 237, 217, 0.9));
 }
 
 /* Practice */
