@@ -3,6 +3,8 @@ import { enabledOperationList } from '../lib/settings'
 import { opLabel } from '../lib/problems'
 import { LongPressButton } from './LongPressButton'
 
+const baseUrl = import.meta.env.BASE_URL || '/'
+
 /** Ser ut som en liten grästuva — inte uppenbart klickbar. */
 function GrassTuftGlyph() {
   return (
@@ -62,8 +64,15 @@ export function HomeView({
       </header>
 
       <div className="hero-block">
-        <div className="horse-emoji" aria-hidden>
-          🐴
+        <div className="home-hero-horse-wrap" aria-hidden>
+          <img
+            className="home-hero-horse"
+            src={`${baseUrl}welcome-horse.png`}
+            alt=""
+            width={256}
+            height={256}
+            decoding="async"
+          />
         </div>
         <h1>Hästmatte</h1>
         <p className="tagline">Välj vad du vill öva — tio frågor per omgång.</p>

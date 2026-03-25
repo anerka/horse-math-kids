@@ -168,10 +168,19 @@ body {
   letter-spacing: 0.02em;
 }
 
-.horse-emoji {
-  font-size: 3.25rem;
-  line-height: 1;
-  filter: drop-shadow(0 2px 4px var(--shadow));
+.home-hero-horse-wrap {
+  display: flex;
+  justify-content: center;
+  line-height: 0;
+}
+
+.home-hero-horse {
+  width: min(36vw, 5.85rem);
+  height: auto;
+  aspect-ratio: 1;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px var(--shadow));
 }
 
 .tagline {
