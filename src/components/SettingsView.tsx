@@ -11,7 +11,7 @@ type Props = {
 export function SettingsView({ initial, onSave, onClose }: Props) {
   const [s, setS] = useState<AppSettings>(() => ({ ...initial }))
 
-  const setPreset = (p: Exclude<Preset, 'custom'>) => {
+  const setPreset = (p: 'easy' | 'medium' | 'hard') => {
     const v = presetValues(p)
     setS((prev) => ({
       ...prev,
