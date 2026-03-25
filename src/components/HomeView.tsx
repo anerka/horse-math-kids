@@ -1,12 +1,6 @@
-import { useEffect } from 'react'
 import type { AppSettings, Operation } from '../lib/settings'
 import { enabledOperationList } from '../lib/settings'
 import { opLabel } from '../lib/problems'
-import {
-  nudgeHomeMenuMusic,
-  startHomeMenuMusic,
-  stopHomeMenuMusic,
-} from '../lib/sound'
 import { LongPressButton } from './LongPressButton'
 
 /** Ser ut som en liten grästuva — inte uppenbart klickbar. */
@@ -47,28 +41,6 @@ export function HomeView({
 }: Props) {
   const enabled = enabledOperationList(settings.enabledOps)
   const canMixed = enabled.length >= 2
-
-  const menuMusicOn =
-    settings.soundEnabled && settings.menuMusicEnabled
-
-  useEffect(() => {
-    if (!menuMusicOn) {
-      stopHomeMenuMusic()
-      return
-    }
-    startHomeMenuMusic()
-    const onInteract = () => nudgeHomeMenuMusic()
-    window.addEventListener('pointerdown', onInteract, { capture: true })
-    window.addEventListener('touchstart', onInteract, {
-      capture: true,
-      passive: true,
-    })
-    return () => {
-      window.removeEventListener('pointerdown', onInteract, true)
-      window.removeEventListener('touchstart', onInteract, true)
-      stopHomeMenuMusic()
-    }
-  }, [menuMusicOn])
 
   return (
     <div className="screen home">

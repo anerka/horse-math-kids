@@ -2,7 +2,12 @@ import { useCallback, useEffect, useState } from 'react'
 import type { AppSettings, Operation } from './lib/settings'
 import { loadSettings, saveSettings } from './lib/settings'
 import { loadStats } from './lib/stats'
-import { warmupSounds } from './lib/sound'
+import {
+  nudgeHomeMenuMusic,
+  startHomeMenuMusic,
+  stopHomeMenuMusic,
+  warmupSounds,
+} from './lib/sound'
 import { HomeView } from './components/HomeView'
 import { PracticeView } from './components/PracticeView'
 import { SettingsView } from './components/SettingsView'
@@ -16,6 +21,11 @@ function App() {
   const [settings, setSettings] = useState<AppSettings>(() => loadSettings())
   const [statsCarrots, setStatsCarrots] = useState(() => loadStats().carrots)
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
+
+  const menuMusicOn =
+    settings.soundEnabled &&
+    settings.menuMusicEnabled &&
+    (screen.name === 'home' || screen.name === 'settings')
 
   const persist = useCallback((s: AppSettings) => {
     saveSettings(s)
@@ -42,6 +52,24 @@ function App() {
       window.removeEventListener('touchstart', onFirstInteract, true)
     }
   }, [])
+
+  useEffect(() => {
+    if (!menuMusicOn) {
+      stopHomeMenuMusic()
+      return
+    }
+    startHomeMenuMusic()
+    const onInteract = () => nudgeHomeMenuMusic()
+    window.addEventListener('pointerdown', onInteract, { capture: true })
+    window.addEventListener('touchstart', onInteract, {
+      capture: true,
+      passive: true,
+    })
+    return () => {
+      window.removeEventListener('pointerdown', onInteract, true)
+      window.removeEventListener('touchstart', onInteract, true)
+    }
+  }, [menuMusicOn])
 
   if (screen.name === 'settings') {
     return (
