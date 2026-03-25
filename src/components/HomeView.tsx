@@ -9,14 +9,14 @@ function GrassTuftGlyph() {
     <svg
       className="parent-hotspot-glyph"
       viewBox="0 0 40 40"
-      width="26"
-      height="26"
+      width="30"
+      height="30"
       aria-hidden
     >
       <path
         d="M8 28c2-12 4-18 6-20s3 2 2 8c2-10 5-16 7-16s3 6 2 16c3-9 6-14 8-12s1 8-3 20"
         stroke="currentColor"
-        strokeWidth="2.2"
+        strokeWidth="2.6"
         strokeLinecap="round"
         fill="none"
       />
