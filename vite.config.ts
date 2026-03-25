@@ -14,7 +14,8 @@ export default defineConfig({
         'pwa-icon.svg',
         'smiling-horse.png',
         'jamie-horse.png',
-        'happy-horse.png',
+        'error-horse.png',
+        'thumbsup-horse.png',
       ],
       manifest: {
         name: 'Hästmatte',

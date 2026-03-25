@@ -135,9 +135,9 @@ export function PracticeView({ settings, mode, onExit }: Props) {
         <div className="done-horse-wrap" aria-hidden>
           <img
             className="done-horse"
-            src={`${baseUrl}happy-horse.png`}
+            src={`${baseUrl}thumbsup-horse.png`}
             alt=""
-            width={1024}
+            width={930}
             height={1024}
             decoding="async"
           />
@@ -237,9 +237,21 @@ export function PracticeView({ settings, mode, onExit }: Props) {
               <p className="fb ok correct-celebrate-msg">Rätt, bra räknat!</p>
             </div>
           ) : (
-            <p className="fb no">
-              Inte riktigt. Rätt svar är {p.answer}.
-            </p>
+            <div className="wrong-feedback-block">
+              <div className="wrong-feedback-horse-art" aria-hidden>
+                <img
+                  className="wrong-feedback-horse"
+                  src={`${baseUrl}error-horse.png`}
+                  alt=""
+                  width={993}
+                  height={1024}
+                  decoding="async"
+                />
+              </div>
+              <p className="fb no">
+                Inte riktigt. Rätt svar är {p.answer}.
+              </p>
+            </div>
           )}
           <button type="button" className="primary-btn" onClick={goNext}>
             {index + 1 >= ROUND_LEN ? 'Visa resultat' : 'Nästa fråga'}
