@@ -67,10 +67,10 @@ export function HomeView({
         <div className="home-hero-horse-wrap" aria-hidden>
           <img
             className="home-hero-horse"
-            src={`${baseUrl}welcome-horse.png`}
+            src={`${baseUrl}jamie-horse.png`}
             alt=""
-            width={256}
-            height={256}
+            width={1024}
+            height={860}
             decoding="async"
           />
         </div>

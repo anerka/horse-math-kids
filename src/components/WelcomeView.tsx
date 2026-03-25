@@ -21,9 +21,9 @@ export function WelcomeView({ onStart }: Props) {
         <div className="welcome-horse-wrap">
           <img
             className="welcome-horse"
-            src={`${baseUrl}welcome-horse.png`}
+            src={`${baseUrl}smiling-horse.png`}
             alt=""
-            width={1024}
+            width={1017}
             height={1024}
             decoding="async"
           />

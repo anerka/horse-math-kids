@@ -9,7 +9,13 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'pwa-icon.svg', 'welcome-horse.png'],
+      includeAssets: [
+        'favicon.svg',
+        'pwa-icon.svg',
+        'smiling-horse.png',
+        'jamie-horse.png',
+        'happy-horse.png',
+      ],
       manifest: {
         name: 'Hästmatte',
         short_name: 'Hästmatte',

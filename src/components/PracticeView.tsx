@@ -20,6 +20,8 @@ import {
 } from '../lib/sound'
 import { addRoundReward } from '../lib/stats'
 
+const baseUrl = import.meta.env.BASE_URL || '/'
+
 const ROUND_LEN = 10
 
 type Props = {
@@ -130,8 +132,15 @@ export function PracticeView({ settings, mode, onExit }: Props) {
   if (phase === 'done') {
     return (
       <div className="screen practice done-screen">
-        <div className="celebrate" aria-hidden>
-          🐴✨
+        <div className="done-horse-wrap" aria-hidden>
+          <img
+            className="done-horse"
+            src={`${baseUrl}happy-horse.png`}
+            alt=""
+            width={1024}
+            height={1024}
+            decoding="async"
+          />
         </div>
         <h2>Bra jobbat!</h2>
         <p className="score-line">
