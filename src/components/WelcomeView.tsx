@@ -21,10 +21,10 @@ export function WelcomeView({ onStart }: Props) {
         <div className="welcome-horse-wrap">
           <img
             className="welcome-horse"
-            src={`${baseUrl}welcome-horse.svg`}
+            src={`${baseUrl}welcome-horse.png`}
             alt=""
-            width={200}
-            height={248}
+            width={1024}
+            height={1024}
             decoding="async"
           />
         </div>
