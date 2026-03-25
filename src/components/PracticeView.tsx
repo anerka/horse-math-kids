@@ -6,6 +6,7 @@ import {
   opSymbol,
   type Problem,
 } from '../lib/problems'
+import { CelebrationHorse } from './CelebrationHorse'
 import { playComplete, playCorrect, playWrong } from '../lib/sound'
 import { addRoundReward } from '../lib/stats'
 
@@ -174,9 +175,18 @@ export function PracticeView({ settings, mode, onExit }: Props) {
 
       {p && phase === 'feedback' && (
         <div className="feedback-panel">
-          <p className={lastOk ? 'fb ok' : 'fb no'}>
-            {lastOk ? 'Rätt! 🎉' : `Inte riktigt. Rätt svar är ${p.answer}.`}
-          </p>
+          {lastOk ? (
+            <div className="correct-celebrate">
+              <div className="correct-celebrate-art" aria-hidden>
+                <CelebrationHorse />
+              </div>
+              <p className="fb ok correct-celebrate-msg">Rätt, bra räknat!</p>
+            </div>
+          ) : (
+            <p className="fb no">
+              Inte riktigt. Rätt svar är {p.answer}.
+            </p>
+          )}
           <button type="button" className="primary-btn" onClick={goNext}>
             {index + 1 >= ROUND_LEN ? 'Visa resultat' : 'Nästa fråga'}
           </button>

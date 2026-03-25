@@ -318,6 +318,71 @@ body {
   padding: 1rem 0;
 }
 
+.correct-celebrate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.correct-celebrate-art {
+  width: min(220px, 72vw);
+  animation: celebrate-horse-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.correct-celebrate .celebration-horse-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 6px 14px rgba(45, 31, 24, 0.15));
+}
+
+.correct-celebrate-msg {
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.celebration-horse-stars {
+  transform-origin: 110px 100px;
+  animation: celebrate-stars 1.2s ease-in-out infinite;
+}
+
+@keyframes celebrate-horse-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.65) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes celebrate-stars {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: rotate(-2deg) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: rotate(2deg) scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .correct-celebrate-art,
+  .celebration-horse-stars {
+    animation: none;
+  }
+
+  .correct-celebrate-art {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .fb {
   font-size: 1.2rem;
   text-align: center;
