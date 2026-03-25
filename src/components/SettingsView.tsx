@@ -148,6 +148,22 @@ export function SettingsView({ initial, onSave, onClose }: Props) {
             }
           />
         </label>
+        <label className="toggle-row">
+          <span>Menymusik (startskärmen)</span>
+          <input
+            type="checkbox"
+            checked={s.menuMusicEnabled}
+            disabled={!s.soundEnabled}
+            onChange={(e) =>
+              setS((p) => ({ ...p, menuMusicEnabled: e.target.checked }))
+            }
+          />
+        </label>
+        {!s.soundEnabled && (
+          <p className="hint-text">
+            Slå på ljud för att kunna använda menymusik.
+          </p>
+        )}
       </section>
 
       <div className="settings-actions">

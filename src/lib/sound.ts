@@ -208,7 +208,7 @@ export function playComplete(allCorrect: boolean): void {
   playSoundUrl(url, 0.85, () => playHtmlFallback(url, 0.85))
 }
 
-const homeMenuMusicUrl = `${baseUrl}sounds/menu-cheerful-loop.mp3`
+const homeMenuMusicUrl = `${baseUrl}sounds/menu-lobby-466008.mp3`
 let homeMenuAudio: HTMLAudioElement | null = null
 
 /** Loopande bakgrund på startskärmen (MP3 via HTMLAudio). */

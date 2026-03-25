@@ -16,6 +16,8 @@ export interface AppSettings {
   includeZero: boolean
   enabledOps: EnabledOps
   soundEnabled: boolean
+  /** Bakgrundsmusik på startskärmen (kräver att huvudljud är på). */
+  menuMusicEnabled: boolean
 }
 
 export const STORAGE_KEY = 'hastmatte-settings-v1'
@@ -27,6 +29,7 @@ export const defaultSettings: AppSettings = {
   includeZero: true,
   enabledOps: { add: true, sub: true, mul: true, div: true },
   soundEnabled: true,
+  menuMusicEnabled: true,
 }
 
 export function presetValues(
@@ -54,6 +57,10 @@ export function loadSettings(): AppSettings {
     return {
       ...defaultSettings,
       ...parsed,
+      menuMusicEnabled:
+        typeof parsed.menuMusicEnabled === 'boolean'
+          ? parsed.menuMusicEnabled
+          : defaultSettings.menuMusicEnabled,
       enabledOps: {
         ...defaultSettings.enabledOps,
         ...parsed.enabledOps,

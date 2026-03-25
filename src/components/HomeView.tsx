@@ -48,8 +48,11 @@ export function HomeView({
   const enabled = enabledOperationList(settings.enabledOps)
   const canMixed = enabled.length >= 2
 
+  const menuMusicOn =
+    settings.soundEnabled && settings.menuMusicEnabled
+
   useEffect(() => {
-    if (!settings.soundEnabled) {
+    if (!menuMusicOn) {
       stopHomeMenuMusic()
       return
     }
@@ -65,7 +68,7 @@ export function HomeView({
       window.removeEventListener('touchstart', onInteract, true)
       stopHomeMenuMusic()
     }
-  }, [settings.soundEnabled])
+  }, [menuMusicOn])
 
   return (
     <div className="screen home">
