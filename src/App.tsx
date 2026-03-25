@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { AppSettings, Operation } from './lib/settings'
 import { loadSettings, saveSettings } from './lib/settings'
 import { loadStats } from './lib/stats'
+import { warmupSounds } from './lib/sound'
 import { HomeView } from './components/HomeView'
 import { PracticeView } from './components/PracticeView'
 import { SettingsView } from './components/SettingsView'
@@ -23,6 +24,23 @@ function App() {
 
   const refreshStats = useCallback(() => {
     setStatsCarrots(loadStats().carrots)
+  }, [])
+
+  useEffect(() => {
+    const onFirstInteract = () => {
+      warmupSounds()
+      window.removeEventListener('pointerdown', onFirstInteract, true)
+      window.removeEventListener('touchstart', onFirstInteract, true)
+    }
+    window.addEventListener('pointerdown', onFirstInteract, { capture: true })
+    window.addEventListener('touchstart', onFirstInteract, {
+      capture: true,
+      passive: true,
+    })
+    return () => {
+      window.removeEventListener('pointerdown', onFirstInteract, true)
+      window.removeEventListener('touchstart', onFirstInteract, true)
+    }
   }, [])
 
   if (screen.name === 'settings') {

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { AppSettings, Operation } from '../lib/settings'
 import {
   generateProblems,
@@ -7,7 +7,7 @@ import {
   type Problem,
 } from '../lib/problems'
 import { CelebrationHorse } from './CelebrationHorse'
-import { playComplete, playCorrect, playWrong } from '../lib/sound'
+import { playComplete, playCorrect, playWrong, warmupSounds } from '../lib/sound'
 import { addRoundReward } from '../lib/stats'
 
 const ROUND_LEN = 10
@@ -29,6 +29,10 @@ export function PracticeView({ settings, mode, onExit }: Props) {
     () => generateProblems(settings, mode, ROUND_LEN),
     [settings, mode],
   )
+
+  useEffect(() => {
+    warmupSounds()
+  }, [])
 
   const [index, setIndex] = useState(0)
   const [input, setInput] = useState('')
