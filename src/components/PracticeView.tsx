@@ -7,7 +7,17 @@ import {
   type Problem,
 } from '../lib/problems'
 import { CelebrationHorse } from './CelebrationHorse'
-import { playComplete, playCorrect, playWrong, warmupSounds } from '../lib/sound'
+import {
+  nudgePracticeGameMusic,
+  pausePracticeGameMusic,
+  playComplete,
+  playCorrect,
+  playWrong,
+  resumePracticeGameMusic,
+  startPracticeGameMusic,
+  stopPracticeGameMusic,
+  warmupSounds,
+} from '../lib/sound'
 import { addRoundReward } from '../lib/stats'
 
 const ROUND_LEN = 10
@@ -34,6 +44,20 @@ export function PracticeView({ settings, mode, onExit }: Props) {
     warmupSounds()
   }, [])
 
+  useEffect(() => {
+    const nudge = () => nudgePracticeGameMusic()
+    window.addEventListener('pointerdown', nudge, { capture: true })
+    window.addEventListener('touchstart', nudge, {
+      capture: true,
+      passive: true,
+    })
+    return () => {
+      window.removeEventListener('pointerdown', nudge, true)
+      window.removeEventListener('touchstart', nudge, true)
+      stopPracticeGameMusic()
+    }
+  }, [])
+
   const [index, setIndex] = useState(0)
   const [input, setInput] = useState('')
   const [score, setScore] = useState(0)
@@ -41,6 +65,23 @@ export function PracticeView({ settings, mode, onExit }: Props) {
   const [lastOk, setLastOk] = useState<boolean | null>(null)
   const [rewardTotal, setRewardTotal] = useState<number | null>(null)
   const [roundStars, setRoundStars] = useState<1 | 2 | 3>(1)
+
+  useEffect(() => {
+    if (!settings.soundEnabled || problems.length === 0) {
+      stopPracticeGameMusic()
+      return
+    }
+    if (phase === 'done') {
+      stopPracticeGameMusic()
+      return
+    }
+    if (phase === 'feedback' && lastOk === false) {
+      pausePracticeGameMusic()
+      return
+    }
+    startPracticeGameMusic()
+    resumePracticeGameMusic()
+  }, [settings.soundEnabled, problems.length, phase, lastOk])
 
   const p: Problem | undefined = problems[index]
 

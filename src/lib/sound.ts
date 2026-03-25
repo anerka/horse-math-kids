@@ -240,3 +240,45 @@ export function stopHomeMenuMusic(): void {
   homeMenuAudio.load()
   homeMenuAudio = null
 }
+
+/** Under övning — lägre volym än menymusik (0.32). */
+const practiceGameMusicUrl = `${baseUrl}sounds/practice-lobby-466014.mp3`
+const PRACTICE_GAME_MUSIC_VOLUME = 0.22
+let practiceGameAudio: HTMLAudioElement | null = null
+
+export function startPracticeGameMusic(): void {
+  if (typeof Audio === 'undefined') return
+  if (practiceGameAudio) {
+    void practiceGameAudio.play().catch(() => {})
+    return
+  }
+  const a = new Audio(practiceGameMusicUrl)
+  a.loop = true
+  a.preload = 'auto'
+  a.volume = PRACTICE_GAME_MUSIC_VOLUME
+  a.setAttribute('playsinline', 'true')
+  practiceGameAudio = a
+  void a.play().catch(() => {})
+}
+
+export function pausePracticeGameMusic(): void {
+  practiceGameAudio?.pause()
+}
+
+export function resumePracticeGameMusic(): void {
+  if (!practiceGameAudio) return
+  void practiceGameAudio.play().catch(() => {})
+}
+
+export function nudgePracticeGameMusic(): void {
+  if (!practiceGameAudio) return
+  if (practiceGameAudio.paused) void practiceGameAudio.play().catch(() => {})
+}
+
+export function stopPracticeGameMusic(): void {
+  if (!practiceGameAudio) return
+  practiceGameAudio.pause()
+  practiceGameAudio.removeAttribute('src')
+  practiceGameAudio.load()
+  practiceGameAudio = null
+}
