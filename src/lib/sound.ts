@@ -207,3 +207,36 @@ export function playComplete(allCorrect: boolean): void {
   const url = allCorrect ? roundApplauseUrl : roundCheerUrl
   playSoundUrl(url, 0.85, () => playHtmlFallback(url, 0.85))
 }
+
+const homeMenuMusicUrl = `${baseUrl}sounds/menu-cheerful-loop.mp3`
+let homeMenuAudio: HTMLAudioElement | null = null
+
+/** Loopande bakgrund på startskärmen (MP3 via HTMLAudio). */
+export function startHomeMenuMusic(): void {
+  if (typeof Audio === 'undefined') return
+  if (homeMenuAudio) {
+    void homeMenuAudio.play().catch(() => {})
+    return
+  }
+  const a = new Audio(homeMenuMusicUrl)
+  a.loop = true
+  a.preload = 'auto'
+  a.volume = 0.32
+  a.setAttribute('playsinline', 'true')
+  homeMenuAudio = a
+  void a.play().catch(() => {})
+}
+
+/** Efter första tryck/touch (t.ex. iOS) om autoplay blockerats. */
+export function nudgeHomeMenuMusic(): void {
+  if (!homeMenuAudio) return
+  if (homeMenuAudio.paused) void homeMenuAudio.play().catch(() => {})
+}
+
+export function stopHomeMenuMusic(): void {
+  if (!homeMenuAudio) return
+  homeMenuAudio.pause()
+  homeMenuAudio.removeAttribute('src')
+  homeMenuAudio.load()
+  homeMenuAudio = null
+}
