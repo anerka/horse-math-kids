@@ -22,27 +22,6 @@ function ensureCtx(): AudioContext | null {
   }
 }
 
-function beep(
-  frequency: number,
-  durationMs: number,
-  type: OscillatorType,
-  gain: number,
-): void {
-  const c = ensureCtx()
-  if (!c) return
-  const osc = c.createOscillator()
-  const g = c.createGain()
-  osc.type = type
-  osc.frequency.value = frequency
-  g.gain.value = gain
-  osc.connect(g)
-  g.connect(c.destination)
-  const now = c.currentTime
-  osc.start(now)
-  g.gain.exponentialRampToValueAtTime(0.0001, now + durationMs / 1000)
-  osc.stop(now + durationMs / 1000 + 0.02)
-}
-
 /** Kort syntetisk "fart" för fallback. */
 let wrongFartAudio: HTMLAudioElement | null = null
 let wrongScreamAudio: HTMLAudioElement | null = null
@@ -148,8 +127,8 @@ function playScream(): void {
 
 /** Kort glad tvåton — tydlig bekräftelse utan “hästljud”. */
 export function playCorrect(): void {
-  beep(784, 85, 'sine', 0.055)
-  setTimeout(() => beep(1047, 110, 'sine', 0.042), 70)
+  // Inget "bip": just nu har vi bara WAV-ljud för fel & runda klart.
+  // (Om du vill ha WAV även för rätt svar kan vi lägga till det också.)
 }
 
 export function playWrong(): void {
@@ -158,8 +137,7 @@ export function playWrong(): void {
   else playFart()
   wrongAlt = !wrongAlt
 
-  // Behåll kort bekräftelse-ton, men lägg den något lägre så ljudfilen hörs.
-  beep(220, 160, 'triangle', 0.04)
+  // Inget "bip" efter ljudfilen.
 }
 
 let roundApplauseAudio: HTMLAudioElement | null = null
@@ -186,10 +164,7 @@ function playRoundAudio(audio: HTMLAudioElement | null, url: string): void {
 }
 
 function playRoundCompleteFallback(): void {
-  // Liten uppåtgående sekvens när omgången är klar.
-  beep(523, 100, 'sine', 0.05)
-  setTimeout(() => beep(659, 100, 'sine', 0.045), 120)
-  setTimeout(() => beep(784, 160, 'sine', 0.038), 240)
+  // Tyst fallback om WAV-laddning skulle blockeras.
 }
 
 /**
