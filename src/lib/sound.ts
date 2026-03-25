@@ -37,29 +37,12 @@ function beep(
   osc.stop(now + durationMs / 1000 + 0.02)
 }
 
-/** Kort syntetisk "fart": brus i basregistret + liten ton-svaj. */
+/** Kort syntetisk "fart" för fallback. */
 let wrongFartAudio: HTMLAudioElement | null = null
+let wrongScreamAudio: HTMLAudioElement | null = null
+let wrongAlt = false
 
-function playFart(): void {
-  // Preferera den riktiga ljudfilen (kort och tydlig).
-  try {
-    if (typeof Audio !== 'undefined') {
-      if (!wrongFartAudio) {
-        wrongFartAudio = new Audio('/sounds/wrong-fart.wav')
-        wrongFartAudio.preload = 'auto'
-        wrongFartAudio.volume = 0.85
-      }
-      wrongFartAudio.currentTime = 0
-      void wrongFartAudio.play().catch(() => {
-        // Om autoplay/blockering händer: kör fallback-syntes.
-      })
-      return
-    }
-  } catch {
-    // Kör fallback.
-  }
-
-  // Fallback: syntetisk fart om filen inte kan spelas.
+function playFartSynth(): void {
   const c = ensureCtx()
   if (!c) return
 
@@ -114,6 +97,49 @@ function playFart(): void {
   osc.stop(t0 + dur)
 }
 
+function playFart(): void {
+  try {
+    if (typeof Audio === 'undefined') {
+      playFartSynth()
+      return
+    }
+    if (!wrongFartAudio) {
+      wrongFartAudio = new Audio('/sounds/wrong-fart.wav')
+      wrongFartAudio.preload = 'auto'
+      wrongFartAudio.volume = 1
+    }
+    wrongFartAudio.currentTime = 0
+    const p = wrongFartAudio.play()
+    if (p && typeof p.catch === 'function') {
+      void p.catch(() => {
+        playFartSynth()
+      })
+    }
+  } catch {
+    playFartSynth()
+  }
+}
+
+function playScream(): void {
+  try {
+    if (typeof Audio === 'undefined') return
+    if (!wrongScreamAudio) {
+      wrongScreamAudio = new Audio('/sounds/wrong-scream.wav')
+      wrongScreamAudio.preload = 'auto'
+      wrongScreamAudio.volume = 1
+    }
+    wrongScreamAudio.currentTime = 0
+    const p = wrongScreamAudio.play()
+    if (p && typeof p.catch === 'function') {
+      void p.catch(() => {
+        playFartSynth()
+      })
+    }
+  } catch {
+    playFartSynth()
+  }
+}
+
 /** Kort glad tvåton — tydlig bekräftelse utan “hästljud”. */
 export function playCorrect(): void {
   beep(784, 85, 'sine', 0.055)
@@ -121,8 +147,13 @@ export function playCorrect(): void {
 }
 
 export function playWrong(): void {
-  playFart()
-  beep(220, 200, 'triangle', 0.055)
+  // Växla mellan de två “wrong”-ljuden per fel-svar.
+  if (wrongAlt) playScream()
+  else playFart()
+  wrongAlt = !wrongAlt
+
+  // Behåll kort bekräftelse-ton, men lägg den något lägre så ljudfilen hörs.
+  beep(220, 160, 'triangle', 0.04)
 }
 
 /** Liten uppåtgående sekvens när omgången är klar. */
