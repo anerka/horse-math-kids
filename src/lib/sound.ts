@@ -6,6 +6,13 @@ const roundApplauseUrl = `${baseUrl}sounds/round-applause-510.wav`
 const roundCheerUrl = `${baseUrl}sounds/round-cheer-515.wav`
 const correctSparkleUrl = `${baseUrl}sounds/correct-sparkle-866.wav`
 const correctVictoryUrl = `${baseUrl}sounds/correct-victory-2012.wav`
+const correctClappingUrl = `${baseUrl}sounds/correct-clapping-479.wav`
+
+const CORRECT_SOUND_URLS: readonly string[] = [
+  correctSparkleUrl,
+  correctVictoryUrl,
+  correctClappingUrl,
+]
 
 const ALL_SOUND_URLS: readonly string[] = [
   wrongFartUrl,
@@ -13,8 +20,7 @@ const ALL_SOUND_URLS: readonly string[] = [
   wrongFallScreamUrl,
   roundApplauseUrl,
   roundCheerUrl,
-  correctSparkleUrl,
-  correctVictoryUrl,
+  ...CORRECT_SOUND_URLS,
 ]
 
 let ctx: AudioContext | null = null
@@ -179,7 +185,9 @@ function playFartSynth(): void {
 
 export function playCorrect(): void {
   const url =
-    Math.random() < 0.5 ? correctSparkleUrl : correctVictoryUrl
+    CORRECT_SOUND_URLS[
+      Math.floor(Math.random() * CORRECT_SOUND_URLS.length)
+    ]!
   playSoundUrl(url, 0.95, () => playHtmlFallback(url, 0.95))
 }
 
