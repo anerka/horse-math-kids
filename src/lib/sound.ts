@@ -1,5 +1,4 @@
 const baseUrl = import.meta.env.BASE_URL || '/'
-const wrongFartUrl = `${baseUrl}sounds/wrong-fart.wav`
 const wrongScreamUrl = `${baseUrl}sounds/wrong-scream.wav`
 const wrongFallScreamUrl = `${baseUrl}sounds/wrong-fall-scream-392.wav`
 const roundApplauseUrl = `${baseUrl}sounds/round-applause-510.wav`
@@ -15,7 +14,6 @@ const CORRECT_SOUND_URLS: readonly string[] = [
 ]
 
 const ALL_SOUND_URLS: readonly string[] = [
-  wrongFartUrl,
   wrongScreamUrl,
   wrongFallScreamUrl,
   roundApplauseUrl,
@@ -135,69 +133,7 @@ function playSoundUrl(
   })
 }
 
-/** Kort syntetisk "fart" för fallback. */
 let wrongSoundIndex = 0
-
-function playFartSynth(): void {
-  const c = ensureCtx()
-  if (!c) return
-
-  const buildAndStart = (): void => {
-  const t0 = c.currentTime
-  const dur = 0.28
-
-  const buf = c.createBuffer(1, Math.ceil(c.sampleRate * dur), c.sampleRate)
-  const data = buf.getChannelData(0)
-  for (let i = 0; i < data.length; i++) {
-    data[i] = (Math.random() * 2 - 1) * 0.55
-  }
-  const src = c.createBufferSource()
-  src.buffer = buf
-
-  const bp = c.createBiquadFilter()
-  bp.type = 'bandpass'
-  bp.Q.value = 7.5
-  bp.frequency.setValueAtTime(230, t0)
-  bp.frequency.exponentialRampToValueAtTime(110, t0 + dur * 0.75)
-
-  const g = c.createGain()
-  g.gain.setValueAtTime(0.0001, t0)
-  g.gain.exponentialRampToValueAtTime(0.09, t0 + 0.02)
-  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur)
-
-  src.connect(bp)
-  bp.connect(g)
-  g.connect(c.destination)
-  src.start(t0)
-  src.stop(t0 + dur + 0.02)
-
-  const osc = c.createOscillator()
-  osc.type = 'sine'
-  osc.frequency.setValueAtTime(140, t0 + 0.01)
-  osc.frequency.exponentialRampToValueAtTime(85, t0 + dur * 0.9)
-
-  const of = c.createBiquadFilter()
-  of.type = 'lowpass'
-  of.frequency.value = 360
-
-  const og = c.createGain()
-  og.gain.setValueAtTime(0.0001, t0)
-  og.gain.exponentialRampToValueAtTime(0.03, t0 + 0.03)
-  og.gain.exponentialRampToValueAtTime(0.0001, t0 + dur * 0.85)
-
-  osc.connect(of)
-  of.connect(og)
-  og.connect(c.destination)
-  osc.start(t0)
-  osc.stop(t0 + dur)
-  }
-
-  if (c.state === 'suspended') {
-    void c.resume().then(buildAndStart)
-  } else {
-    buildAndStart()
-  }
-}
 
 export function playCorrect(): void {
   const url =
@@ -208,14 +144,10 @@ export function playCorrect(): void {
 }
 
 export function playWrong(): void {
-  const i = wrongSoundIndex % 3
+  const i = wrongSoundIndex % 2
   wrongSoundIndex += 1
-  const url =
-    i === 0 ? wrongFartUrl : i === 1 ? wrongScreamUrl : wrongFallScreamUrl
-  const fallback =
-    i === 0
-      ? () => playFartSynth()
-      : () => playHtmlFallback(url, 1)
+  const url = i === 0 ? wrongScreamUrl : wrongFallScreamUrl
+  const fallback = () => playHtmlFallback(url, 1)
   playSoundUrl(url, 1, fallback)
 }
 
